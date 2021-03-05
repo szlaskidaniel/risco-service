@@ -5,6 +5,8 @@ Integration works only when proper Ethernet module is added to your Risco Unit a
 
 The purpose of this service was to separate Risco API endpoints from Homebridge. During my tests Homebridge was quite unresponsive and prone to strange behaviours / delays. If you're already have a hardware where you run Homebridge, you can also install separate service for Risco Alarm, that handle all logic inside and expose only http endpoint where from Homebridge / any other platform you can read / arm / disarm your Risco. Polling is enabled by default.
 
+Service by default saves last known status (if changed) into file. That way even if service is restarted - last status from file is read.
+
 ## Available methods
 
 - GET /alarm/check - get Risco Status (3 - disarmed, 1 - armed)
