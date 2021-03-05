@@ -1,0 +1,17 @@
+GET http://localhost:8889/alarm/check
+
+###
+
+GET http://localhost:8889/alarm/arm/disarmed
+
+###
+
+GET http://localhost:8889/alarm/arm/away
+
+###
+
+GET http://localhost:8889/alarm/bypass/2/false
+
+###
+
+GET http://localhost:8889/alarm/bypass/2

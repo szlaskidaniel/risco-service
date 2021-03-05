@@ -1,0 +1,24 @@
+{
+  "name": "risco-service",
+  "version": "1.0.0",
+  "description": "risco-service",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "DanielSzlaski",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "fs": "0.0.1-security",
+    "moment": "^2.24.0",
+    "npm": "^6.14.2",
+    "path": "^0.12.7",
+    "request": "^2.88.2",
+    "winston": "^3.2.1",
+    "winston-daily-rotate-file": "^3.10.0"
+  },
+  "devDependencies": {
+    "express": "^4.17.1"
+  }
+}

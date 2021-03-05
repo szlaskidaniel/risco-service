@@ -1,0 +1,6 @@
+{
+  "RISCO_USER": "<your-emailAddressForRiscoCloud>",
+  "RISCO_PASS": "<RiscoPass>",
+  "RISCO_PIN": "<SitePIN>",
+  "RISCO_SITEID": "<RiscoSiteId>"
+}
