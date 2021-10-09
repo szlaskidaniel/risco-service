@@ -66,7 +66,7 @@ docker run --init --name my-risco-service -p 8889:8889 -v $(pwd)/config.json:/ho
 For example, installing from Docker Hub (make sure to set up config.json first):
 
 ```bash
-docker run --init --name my-risco-service -p 8889:8889 -v $(pwd)/config.json:/home/node/code/config.json mdworld/risco-service
+docker run -d --restart unless-stopped --name my-risco-service -p 8889:8889 -v $(pwd)/config.json:/home/node/code/config.json mdworld/risco-service
 ```
 
 ## Use with Domoticz
