@@ -71,9 +71,60 @@ docker run --init --name my-risco-service -p 8889:8889 -v $(pwd)/config.json:/ho
 
 ## Use with Domoticz
 
-WIP
-https://gabor.heja.hu/blog/2020/01/16/domoticz-http-https-poller-and-json/
+Based on: https://gabor.heja.hu/blog/2020/01/16/domoticz-http-https-poller-and-json/
 
+
+
+- Setup > Hardware > Add a device:
+    - name `Risco Cloud` 
+    - type `HTTP/HTTPS poller`
+    - method `GET`
+    - ContentType: `application/json`
+    - URL: `http://localhost:8889/alarm/check`
+    - Command: `risco_cloud.lua`
+    - Refresh: `60` This is in seconds, do not set to lower than 12 seconds
+- Setup > Hardware > Risco Cloud > Create Virtual Sensors
+    - Name `Risco State`
+    - Sensor Type: `Selector Switch`
+- Setup > Devices > Search `Risco State` should show it, copy the Idx, e.g. 2053
+- Switches > Find `Risco State` and edit it. 
+    - Rename selector levels:
+        - 0 disarmed
+        - 10 partarmed
+        - 20 armed
+    - Set Protected to true
+    - Change "Switch Icon" to `Generic On/Off switch`
+- On the filesystem, in the Domoticz dir create `config/scripts/lua_parsers/risco_cloud.lua` with:
+
+```lua
+local idx = 2053
+local alarm_status = request['content']
+
+-- 0 -  Characteristic.SecuritySystemTargetState.STAY_ARM:
+-- 1 -  Characteristic.SecuritySystemTargetState.AWAY_ARM:
+-- 2 -  Characteristic.SecuritySystemTargetState.NIGHT_ARM:
+-- 3 -  Characteristic.SecuritySystemTargetState.DISARM:
+
+if (alarm_status == "0")
+then
+  print ("0=stay_arm, setting to 20")
+  domoticz_updateDevice(idx, '' , 20)
+elseif (alarm_status == "1")
+then
+  print ("1=away_arm, setting to 10")
+  domoticz_updateDevice(idx, '' , 10)
+elseif (alarm_status == "2")
+then
+  print ("2=night_arm, setting to 10")
+  domoticz_updateDevice(idx, '' , 10)
+elseif (alarm_status == "3")
+then
+  print ("3=disarm, setting to 0")
+  domoticz_updateDevice(idx, '' , 0)
+else
+  print ("invalid state", alarm_status)
+end
+```
 
 ## Use with Homebridge
 
