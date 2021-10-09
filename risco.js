@@ -483,6 +483,90 @@ function getBypass(_id) {
   return skipRoomDetector['room_' + _id];
 }
 
+function getDetectors() {
+  logger.info("getDetectors");
+  return new Promise(function (resolve, reject) {
+    var post_data = {};
+
+    var options = {
+      url: "https://www.riscocloud.com/ELAS/WebUI/Detectors/Get",
+      method: "POST",
+      headers: {
+        Referer: "https://www.riscocloud.com/ELAS/WebUI/MainPage/MainPage",
+        Origin: "https://www.riscocloud.com",
+        Cookie: riscoCookies,
+      },
+      json: post_data,
+    };
+
+    request(options, function (err, res, body) {
+      if (!err) {
+        // Check error inside JSON
+        try {
+          if (body.error == 3) {
+            // Error. Try to login first
+            logger.error("Error: 3. Try to login first.");
+            reject();
+            return;
+          }
+        } catch (error) {
+          logger.error(error);
+          reject();
+          return;
+        }
+
+        //logger.debug('RiscoCloud ArmedState:' + body.overview.partInfo.armedStr + " / RiscoCloud OngoingAlarm: " + body.OngoingAlarm );
+        var riscoState;
+        // 0 -  Characteristic.SecuritySystemTargetState.STAY_ARM:
+        // 1 -  Characteristic.SecuritySystemTargetState.AWAY_ARM:
+        // 2-   Characteristic.SecuritySystemTargetState.NIGHT_ARM:
+        // 3 -  Characteristic.SecuritySystemTargetState.DISARM:
+        //logger.debug(body);
+
+        logger.debug(body.detectors);
+        const x = body.detectors.parts[0].detectors.map((d) => ({
+          name: d.name,
+        }));
+        console.log(x);
+
+        resolve(x);
+
+        // if (body.OngoingAlarm == true) {
+        //   riscoState = 4;
+        // } else {
+        //   try {
+        //     console.log(body.overview.lastAlarms);
+        //     logger.error("hoi1");
+
+        //     var armedZones = body.overview.partInfo.armedStr.split(' ');
+        //     var partArmedZones = body.overview.partInfo.partarmedStr.split(' ');
+
+        //     if (parseInt(armedZones[0]) > 0) {
+        //       riscoState = 1; // Armed
+        //     } else if (parseInt(partArmedZones[0]) > 0) {
+        //       riscoState = 2; // Partially Armed
+        //     } else {
+        //       riscoState = 3; // Disarmed
+        //     }
+        //   } catch (error) {
+        //     logger.error(error);
+        //     reject();
+        //     return;
+        //   }
+        // }
+
+        // logger.debug(`riscoState: ${riscoState}`);
+        // riscoStatus = riscoState;
+        // resolve(riscoState);
+      } else {
+        logger.error(err);
+        reject();
+        return;
+      }
+    });
+  });
+}
+
 module.exports = {
   init,
   login,
@@ -491,4 +575,5 @@ module.exports = {
   setStatus,
   setBypass,
   getBypass,
+  getDetectors,
 };

@@ -91,6 +91,11 @@ server.get('/alarm/bypass/:id', async (req, res, next) => {
   res.status(200).send(status);
 });
 
+server.get('/alarm/detectors', async (req, res, next) => {
+  logger.info('GET /alarm/detectors');
+  res.status(200).send(await risco.getDetectors());
+});
+
 //#endregion /Risco Security Login
 
 // ready for Heroku
