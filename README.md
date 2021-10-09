@@ -14,7 +14,7 @@ Service by default saves last known status (if changed) into file. That way even
 - GET /alarm/bypass/:id/state - set sensor with provided id to be omitted during next arm cycle
 - GET /alarm/bypass/:id - get bypass value for requested sensor
 
-## RassberyPi how to start service automatically
+## Raspberry Pi: how to start service automatically
 
 For this we should create new service in /lib/systemd/system/
 Instructions can be found here:
@@ -25,15 +25,15 @@ https://www.paulaikman.co.uk/nodejs-services-raspberrypi/
 sudo systemctl start|stop|restart risco.service
 sudo systemctl restart risco.service
 
-## Cofnig file
+## Config file
 
 Before you run this service, make sure you update config.json file.
 
 ```json
-  "RISCO_USER":   Riso User, usually your email address
+  "RISCO_USER":   Risco User, usually your email address
   "RISCO_PASS":   Your Password to Risco system
   "RISCO_PIN":    Your PIN
-  "RISCO_SITEID": Your Risco SideID
+  "RISCO_SITEID": Your Risco SiteID
 ```
 
 ### How to get your riscoSiteId
@@ -45,6 +45,23 @@ To get your riscoSiteId, login to riscocloud via ChromeBrowser (first login scre
 ```
 
 In that case "12345" is your siteId which should be placed in new config file.
+
+## Docker
+
+build: `docker build -t risco-service .`
+run: `docker run --init --name my-risco-service -p 8889:8889 -v $(pwd)/config.json:/home/node/code/config.json risco-service`
+
+or with docker compose (docker build not needed):
+
+```bash
+docker compose up
+```
+
+## Use with Domoticz
+
+WIP
+https://gabor.heja.hu/blog/2020/01/16/domoticz-http-https-poller-and-json/
+
 
 ## Use with Homebridge
 
