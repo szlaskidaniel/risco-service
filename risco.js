@@ -2,6 +2,7 @@ let request = require('request');
 let winston = require('winston');
 let logger = winston.loggers.get('risco');
 let fs = require('fs');
+const fetch = require("node-fetch");
 
 var riscoCookies;
 var risco_username;
@@ -483,88 +484,55 @@ function getBypass(_id) {
   return skipRoomDetector['room_' + _id];
 }
 
-function getDetectors() {
+const ROOT_URL = "https://www.riscocloud.com";
+const WEBUI_ROOT_URL = `${ROOT_URL}/ELAS/WebUI`;
+
+const createHeaders = () => {
+  return {
+    Referer: `${WEBUI_ROOT_URL}/MainPage/MainPage`,
+    Origin: ROOT_URL,
+    Cookie: riscoCookies,
+    'Content-Type': 'application/json',
+  };
+}
+
+const validateResponse = (body) => {
+  try {
+    if (body.error == 3) {
+      // Error. Try to login first !
+      logger.error(
+        'Error: 3. Try to login first. --should never happen'
+      );
+      throw new Error(body.error);
+    }
+  } catch (error) {
+    logger.error(error);
+    throw new Error(error);
+  }
+}
+
+const getDetectors = async () => {
   logger.info("getDetectors");
-  return new Promise(function (resolve, reject) {
-    var post_data = {};
 
-    var options = {
-      url: "https://www.riscocloud.com/ELAS/WebUI/Detectors/Get",
+  const post_data = {};
+
+  try {
+    const response = await fetch(`${WEBUI_ROOT_URL}/Detectors/Get`, {
       method: "POST",
-      headers: {
-        Referer: "https://www.riscocloud.com/ELAS/WebUI/MainPage/MainPage",
-        Origin: "https://www.riscocloud.com",
-        Cookie: riscoCookies,
-      },
-      json: post_data,
-    };
+      headers: createHeaders(),
+      body: JSON.stringify(post_data)
+    })
+    const data = await response.json();
 
-    request(options, function (err, res, body) {
-      if (!err) {
-        // Check error inside JSON
-        try {
-          if (body.error == 3) {
-            // Error. Try to login first
-            logger.error("Error: 3. Try to login first.");
-            reject();
-            return;
-          }
-        } catch (error) {
-          logger.error(error);
-          reject();
-          return;
-        }
+    validateResponse(data);
 
-        //logger.debug('RiscoCloud ArmedState:' + body.overview.partInfo.armedStr + " / RiscoCloud OngoingAlarm: " + body.OngoingAlarm );
-        var riscoState;
-        // 0 -  Characteristic.SecuritySystemTargetState.STAY_ARM:
-        // 1 -  Characteristic.SecuritySystemTargetState.AWAY_ARM:
-        // 2-   Characteristic.SecuritySystemTargetState.NIGHT_ARM:
-        // 3 -  Characteristic.SecuritySystemTargetState.DISARM:
-        //logger.debug(body);
-
-        logger.debug(body.detectors);
-        const x = body.detectors.parts[0].detectors.map((d) => ({
-          name: d.name,
-        }));
-        console.log(x);
-
-        resolve(x);
-
-        // if (body.OngoingAlarm == true) {
-        //   riscoState = 4;
-        // } else {
-        //   try {
-        //     console.log(body.overview.lastAlarms);
-        //     logger.error("hoi1");
-
-        //     var armedZones = body.overview.partInfo.armedStr.split(' ');
-        //     var partArmedZones = body.overview.partInfo.partarmedStr.split(' ');
-
-        //     if (parseInt(armedZones[0]) > 0) {
-        //       riscoState = 1; // Armed
-        //     } else if (parseInt(partArmedZones[0]) > 0) {
-        //       riscoState = 2; // Partially Armed
-        //     } else {
-        //       riscoState = 3; // Disarmed
-        //     }
-        //   } catch (error) {
-        //     logger.error(error);
-        //     reject();
-        //     return;
-        //   }
-        // }
-
-        // logger.debug(`riscoState: ${riscoState}`);
-        // riscoStatus = riscoState;
-        // resolve(riscoState);
-      } else {
-        logger.error(err);
-        reject();
-        return;
-      }
-    });
-  });
+    logger.debug(JSON.stringify(data));
+    const detectorList = data.detectors.parts.flatMap(part => part.detectors);
+    return detectorList;
+  } catch(error) {
+    logger.error(error);
+    return;
+  }
 }
 
 module.exports = {
