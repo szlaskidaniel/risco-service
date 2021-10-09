@@ -89,9 +89,10 @@ Based on: https://gabor.heja.hu/blog/2020/01/16/domoticz-http-https-poller-and-j
 - Setup > Devices > Search `Risco State` should show it, copy the Idx, e.g. 2053
 - Switches > Find `Risco State` and edit it. 
     - Rename selector levels:
-        - 0 disarmed
-        - 10 partarmed
-        - 20 armed
+        - 0 disconnected
+        - 10 disarmed
+        - 20 partarmed
+        - 30 armed
     - Set Protected to true
     - Change "Switch Icon" to `Generic On/Off switch`
 - On the filesystem, in the Domoticz dir create `config/scripts/lua_parsers/risco_cloud.lua` with:
@@ -107,22 +108,23 @@ local alarm_status = request['content']
 
 if (alarm_status == "0")
 then
-  print ("0=stay_arm, setting to 20")
-  domoticz_updateDevice(idx, '' , 20)
+  print ("0=stay_arm, setting to 30")
+  domoticz_updateDevice(idx, '' , 30)
 elseif (alarm_status == "1")
 then
-  print ("1=away_arm, setting to 10")
-  domoticz_updateDevice(idx, '' , 10)
+  print ("1=away_arm, setting to 20")
+  domoticz_updateDevice(idx, '' , 20)
 elseif (alarm_status == "2")
 then
-  print ("2=night_arm, setting to 10")
-  domoticz_updateDevice(idx, '' , 10)
+  print ("2=night_arm, setting to 20")
+  domoticz_updateDevice(idx, '' , 20)
 elseif (alarm_status == "3")
 then
-  print ("3=disarm, setting to 0")
-  domoticz_updateDevice(idx, '' , 0)
+  print ("3=disarm, setting to 10")
+  domoticz_updateDevice(idx, '' , 10)
 else
-  print ("invalid state", alarm_status)
+  print ("invalid state, setting to 0, state was:", alarm_status)
+  domoticz_updateDevice(idx, '' , 0)
 end
 ```
 
