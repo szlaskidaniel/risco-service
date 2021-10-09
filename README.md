@@ -48,13 +48,25 @@ In that case "12345" is your siteId which should be placed in new config file.
 
 ## Docker
 
-build: `docker build -t risco-service .`
-run: `docker run --init --name my-risco-service -p 8889:8889 -v $(pwd)/config.json:/home/node/code/config.json risco-service`
+Docker compose could be used, a docker-compose.yml for development is included. The service can also be installed from Docker Hub, see examples below.
 
-or with docker compose (docker build not needed):
+For example, docker compose for local development (docker build not needed):
 
 ```bash
 docker compose up
+```
+
+For example, manual building and running:
+
+```bash
+docker build -t risco-service .
+docker run --init --name my-risco-service -p 8889:8889 -v $(pwd)/config.json:/home/node/code/config.json risco-service
+```
+
+For example, installing from Docker Hub (make sure to set up config.json first):
+
+```bash
+docker run --init --name my-risco-service -p 8889:8889 -v $(pwd)/config.json:/home/node/code/config.json mdworld/risco-service
 ```
 
 ## Use with Domoticz
