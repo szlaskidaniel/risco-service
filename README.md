@@ -91,3 +91,9 @@ My config for this plugin:
   }
 
 ```
+
+
+# Thank you
+If you like it, any BTC donation will be great. My BTC Wallet: 3PZ4WNZq3S8BGcuxz1HC1zByuD6GR84hZQ
+
+<img width="218" alt="Zrzut ekranu 2021-10-11 o 09 33 01" src="https://user-images.githubusercontent.com/3016639/136750254-087b436f-96b3-4e35-b002-e5085e0434b8.png">
