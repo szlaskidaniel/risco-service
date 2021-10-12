@@ -5,6 +5,8 @@ const bodyParser = require('body-parser'); // Required to parse bodies
 const config = require('./config.json');
 const logger = require('./logger');
 const risco = require('./risco');
+const { getDetectors } = require('./riscoGetDetectors');
+
 
 server.use(bodyParser.urlencoded({ extended: true })); // For parsing application/x-www-form-urlencoded
 server.use(bodyParser.json());
@@ -93,7 +95,7 @@ server.get('/alarm/bypass/:id', async (req, res, next) => {
 
 server.get('/alarm/detectors', async (req, res, next) => {
   logger.info('GET /alarm/detectors');
-  res.status(200).send(await risco.getDetectors());
+  res.status(200).send(await getDetectors());
 });
 
 //#endregion /Risco Security Login

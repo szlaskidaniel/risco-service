@@ -2,7 +2,7 @@ let request = require('request');
 let winston = require('winston');
 let logger = winston.loggers.get('risco');
 let fs = require('fs');
-const fetch = require("node-fetch");
+const { setRiscoCookies } = require('./riscoUtils');
 
 var riscoCookies;
 var risco_username;
@@ -101,6 +101,7 @@ function login() {
           if (res.statusCode == 302) {
             logger.debug('cookie received, save it.');
             riscoCookies = res.headers['set-cookie'];
+            setRiscoCookies(riscoCookies);
 
             var post_data =
               'SelectedSiteId=' + risco_siteId + '&Pin=' + risco_pincode;
@@ -484,57 +485,6 @@ function getBypass(_id) {
   return skipRoomDetector['room_' + _id];
 }
 
-const ROOT_URL = "https://www.riscocloud.com";
-const WEBUI_ROOT_URL = `${ROOT_URL}/ELAS/WebUI`;
-
-const createHeaders = () => {
-  return {
-    Referer: `${WEBUI_ROOT_URL}/MainPage/MainPage`,
-    Origin: ROOT_URL,
-    Cookie: riscoCookies,
-    'Content-Type': 'application/json',
-  };
-}
-
-const validateResponse = (body) => {
-  try {
-    if (body.error == 3) {
-      // Error. Try to login first !
-      logger.error(
-        'Error: 3. Try to login first. --should never happen'
-      );
-      throw new Error(body.error);
-    }
-  } catch (error) {
-    logger.error(error);
-    throw new Error(error);
-  }
-}
-
-const getDetectors = async () => {
-  logger.info("getDetectors");
-
-  const post_data = {};
-
-  try {
-    const response = await fetch(`${WEBUI_ROOT_URL}/Detectors/Get`, {
-      method: "POST",
-      headers: createHeaders(),
-      body: JSON.stringify(post_data)
-    })
-    const data = await response.json();
-
-    validateResponse(data);
-
-    logger.debug(JSON.stringify(data));
-    const detectorList = data.detectors.parts.flatMap(part => part.detectors);
-    return detectorList;
-  } catch(error) {
-    logger.error(error);
-    return;
-  }
-}
-
 module.exports = {
   init,
   login,
@@ -543,5 +493,4 @@ module.exports = {
   setStatus,
   setBypass,
   getBypass,
-  getDetectors,
 };
