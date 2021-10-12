@@ -94,6 +94,10 @@ My config for this plugin:
 
 
 # Thank you
-If you like it, any BTC donation will be great. My BTC Wallet: 3PZ4WNZq3S8BGcuxz1HC1zByuD6GR84hZQ
+If you like it, any BTC donation will be great. My BTC Wallets (Coinbase):
 
-<img width="218" alt="Zrzut ekranu 2021-10-11 o 09 33 01" src="https://user-images.githubusercontent.com/3016639/136750254-087b436f-96b3-4e35-b002-e5085e0434b8.png">
+SegWit:
+![segWit](https://user-images.githubusercontent.com/3016639/136926965-9b8ba9a6-f5ae-4756-bb1e-47100f454c53.png)
+
+Legacy:
+![legacy](https://user-images.githubusercontent.com/3016639/136926997-63b61ce7-f2ce-44cb-9862-7adb2d220c0f.jpg)
