@@ -1,0 +1,8 @@
+version: "3.9"
+services:
+  my-risco-service:
+    build: .
+    ports:
+      - "8889:8889"
+    volumes:
+      - ./config.json:/home/node/code/config.json

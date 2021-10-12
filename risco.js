@@ -2,6 +2,7 @@ let request = require('request');
 let winston = require('winston');
 let logger = winston.loggers.get('risco');
 let fs = require('fs');
+const { setRiscoCookies } = require('./riscoUtils');
 
 var riscoCookies;
 var risco_username;
@@ -100,6 +101,7 @@ function login() {
           if (res.statusCode == 302) {
             logger.debug('cookie received, save it.');
             riscoCookies = res.headers['set-cookie'];
+            setRiscoCookies(riscoCookies);
 
             var post_data =
               'SelectedSiteId=' + risco_siteId + '&Pin=' + risco_pincode;
